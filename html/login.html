@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Log In</title>
+</head>
+<body>
+<script>
+function login(event) {
+    event.preventDefault()
+    let user = document.getElementById('user').value
+    let pwd = document.getElementById('pwd').value
+    fetch(`/receiveLogin`, {
+        body: JSON.stringify({
+            username: user,
+            password: pwd
+        }),
+        method: "POST",
+        headers: {
+            'Content-Type': "application/json"
+        }
+    }).then((response) => {
+        if (response.redirected) {
+            window.location.href = response.url
+        }
+        return response.json()
+    }).then((info) => {
+        document.getElementById('error').style.display = info.success ? "none" : "inline-block"
+    })
+    return false;
+}
+</script>
+<form onsubmit="login(event)">
+	<label for="user">Username:</label>
+	<input id="user" type="text" required=""><br>
+	<label for="pwd">Password:</label>
+	<input id="pwd" type="password" required=""><br>
+	<input type="submit" value="Log in">
+</form>
+<div id="error" style="background-color:red; display:none;">Wrong username or password</div>
+</body>
+</html>
