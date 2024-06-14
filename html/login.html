@@ -31,10 +31,11 @@ function login(event) {
 }
 </script>
 <form onsubmit="login(event)">
+    <h3>Login (charlie/tango)</h3>
 	<label for="user">Username:</label>
-	<input id="user" type="text" required=""><br>
+	<input id="user" type="text" required="" placeholder="charlie"><br>
 	<label for="pwd">Password:</label>
-	<input id="pwd" type="password" required=""><br>
+	<input id="pwd" type="password" required="" placeholder="tango"><br>
 	<input type="submit" value="Log in">
 </form>
 <div id="error" style="background-color:red; display:none;">Wrong username or password</div>

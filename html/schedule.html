@@ -113,7 +113,7 @@ function formTable(element) {
 	<td>${obj.start} - ${obj.end}</td>
 	<td>${obj.location}</td>
 	<td>${obj.phone}</td>
-	<td>${obj.url ? `<a href=${obj.url}>${obj.info}</a>` : obj.info}</td>
+	<td>${obj.url ? `<a href=${obj.url}>${obj.info || obj.url}</a>` : obj.info}</td>
 	<td>
 	<a class="btn btn-info" href="/editForm?id=${obj.id}">Edit</a>
 	<input type="button" class="btn btn-danger" value="Delete" onclick="deleteEvent('${obj.id}')">

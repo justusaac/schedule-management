@@ -4,7 +4,7 @@ var app = express();
 
 var fs = require("fs");
 var session = require('express-session');
-var mysql = require("mysql");
+var mysql = require("mysql2");
 const bcrypt = require('bcrypt');
 
 require('dotenv').config()
