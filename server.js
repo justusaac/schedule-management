@@ -9,11 +9,11 @@ const bcrypt = require('bcrypt');
 
 require('dotenv').config()
 const dbCon = mysql.createConnection({
-	host: process.env.host,
-	user: process.env.user,						 
-	password: process.env.password, 
-	database: process.env.database,					
-	port: process.env.port
+    host: process.env.db_host,
+    user: process.env.db_user,            
+    password: process.env.db_password, 
+    database: process.env.db_database,         
+    port: process.env.db_port
 });
 
 // apply the body-parser middleware to all incoming requests
@@ -225,8 +225,10 @@ app.get('*', function(req, res) {
 });
 
 
-// server listens on port 9007 for incoming connections
-app.listen(9007, () => console.log('Listening on port 9007!'));
+// server listens for incoming connections
+// The port could be specified by the $PORT environment variable
+const port = parseInt(process.env.PORT) || 9007;
+app.listen(port, () => console.log('Listening on port '+port+'!'));
 
 
 

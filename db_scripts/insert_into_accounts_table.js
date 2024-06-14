@@ -4,11 +4,11 @@ const bcrypt = require('bcrypt');
 
 require('dotenv').config({path : '../.env'})
 const dbCon = mysql.createConnection({
-  host: process.env.host,
-  user: process.env.user,            
-  password: process.env.password, 
-  database: process.env.database,         
-  port: process.env.port
+    host: process.env.db_host,
+    user: process.env.db_user,            
+    password: process.env.db_password, 
+    database: process.env.db_database,         
+    port: process.env.db_port
 });
 
 console.log("Attempting database connection");
