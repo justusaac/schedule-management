@@ -1,11 +1,12 @@
 
-var express = require("express");
-var app = express();
+const express = require("express");
+const app = express();
 
-var fs = require("fs");
-var session = require('express-session');
-var mysql = require("mysql2");
+const fs = require("fs");
+const session = require('cookie-session');
+const mysql = require("mysql2");
 const bcrypt = require('bcrypt');
+
 
 require('dotenv').config()
 const dbCon = mysql.createConnection({
@@ -21,7 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}))
 
 app.use(session({
-	secret: "csci4131secretkey",
+	secret: process.env.cookie_secret,
 	saveUninitialized: true,
 	resave: false
 }
@@ -54,7 +55,6 @@ app.post('/receiveLogin', (req,res)=>{
 		if(rows.length>0 && bcrypt.compareSync(pwd,rows[0].acc_password)){
 			req.session.user = user
 			res.redirect('/schedule.html')
-			res.write(JSON.stringify({success:true}))
 		}
 		else{
 			res.write(JSON.stringify({success:false}))
@@ -151,10 +151,13 @@ app.get('/editForm',(req,res)=>{
 })
 
 app.get("/logout", (req,res)=>{
+	/*
 	req.session.destroy((err)=>{
 		if(err) { throw err }
 		res.redirect('/login') 
-	})
+	})*/
+	req.session=null
+	res.redirect('/login')
 })
 
 //Check for overlap between events
