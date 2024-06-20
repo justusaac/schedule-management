@@ -142,20 +142,16 @@ app.get('/getSchedule',(req,res)=>{
 
 app.get('/editForm',(req,res)=>{
 	dbCon.query("select * from tbl_events where event_id=?",[parseInt(req.query.id)],(err,rows)=>{
-		if(err || rows.affectedRows==0){
+		if(err || !rows[0] || rows.affectedRows==0){
 			res.sendStatus(404);
 			return
 		}
-		res.render("editEvent", rows[0])
+		rows[0].endpoint = '/postEditEvent'
+		res.render("editEvent", {form_config:JSON.stringify(rows[0])})
 	})
 })
 
 app.get("/logout", (req,res)=>{
-	/*
-	req.session.destroy((err)=>{
-		if(err) { throw err }
-		res.redirect('/login') 
-	})*/
 	req.session=null
 	res.redirect('/login')
 })
@@ -214,7 +210,7 @@ const file_paths = {}
 for(let filename of ["addEvent","index","login","schedule","welcome"]){
 	file_paths[`/${filename}.html`] = `${__dirname}/html/${filename}.html`
 }
-file_paths['/'] = file_paths['/welcome.html']
+file_paths['/'] = file_paths['/index.html']
 file_paths['/login'] = file_paths['/login.html']
 for(let file in file_paths){
 	app.get(file,function(req, res) {
@@ -222,6 +218,8 @@ for(let file in file_paths){
 	});
 }
 
+app.use('/react', express.static('react-compiled'))
+app.use('/', express.static('images'))
 
 app.get('*', function(req, res) {
 	res.sendStatus(404);

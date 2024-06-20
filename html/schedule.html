@@ -7,6 +7,8 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+	<script crossorigin="anonymous" src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+	<script crossorigin="anonymous" src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 	<title>My Schedule</title>
 	<style>
 		.event-row > td > .btn{
@@ -15,118 +17,18 @@
 		.event-row:hover > td > .btn{
 		visibility: visible;
 		}
-		#delete-error-message{
-		display: none;
-		}
 	</style>
 </head>
 <body>
-<nav class="navbar navbar-expanded navbar-light bg-light mb-5">
-	<ul class="nav nav-pills">
-		<li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-		<li class="nav-item active"><a class="nav-link active" href="schedule.html">Schedule</a></li>
-		<li class="nav-item"><a class="nav-link" href="addEvent.html">
-				Add
-				Event</a></li>
-		<li class="nav-item"><a class="nav-link" href="logout">Log out</a></li>
-	</ul>
-</nav>
+<nav class="navbar navbar-expanded navbar-light bg-light mb-5"></nav>
 <div class="container mb-5">
-	<div class="alert alert-danger" id="delete-error-message" role="alert">No error</div>
 	<div class="alert alert-secondary" role="alert">Click on a day to see its events</div>
 </div>
-<div class="container mb-3">
-	<ul class="nav nav-tabs nav-fill" id="days">
-		<li class="nav-item"><a class="nav-link" onclick="formTable(this)">Sunday</a></li>
-		<li class="nav-item"><a class="nav-link" onclick="formTable(this)">Monday</a></li>
-		<li class="nav-item"><a class="nav-link" onclick="formTable(this)">Tuesday</a></li>
-		<li class="nav-item"><a class="nav-link" onclick="formTable(this)">Wednesday</a></li>
-		<li class="nav-item"><a class="nav-link" onclick="formTable(this)">Thursday</a></li>
-		<li class="nav-item"><a class="nav-link" onclick="formTable(this)">Friday</a></li>
-		<li class="nav-item"><a class="nav-link" onclick="formTable(this)">Saturday</a></li>
-	</ul><br><br>
-	<div class="container">
-		<table class="table table-striped" id="scheduleTable">
-			<thead>
-				<tr>
-					<th scope="col">Name</th>
-					<th scope="col">Time</th>
-					<th scope="col">Location</th>
-					<th scope="col">Phone</th>
-					<th scope="col">Extra Information</th>
-					<th scope="col"></th>
-				</tr>
-			</thead>
-			<tbody></tbody>
-		</table>
-	</div>
-</div>
-<script>
-function deleteEvent(id) {
-    let elem = document.querySelector(`#event-${id} > td`)
-    if (!elem) {
-        let error_window = document.getElementById('delete-error-message')
-        error_window.innerHTML = `Error deleting event: not found`
-        error_window.style.setProperty('display', 'block')
-        return
-    }
-    let event_name = elem.innerHTML;
-    if (!window.confirm(`Really delete ${event_name}`)) {
-        return
-    }
-    fetch(`/deleteEvent?id=${id}`).then((response) => {
-        if (!response.ok) {
-            return {
-                success: false
-            }
-        }
-        return response.json()
-    }).then((info) => {
-        if (info.success) {
-            document.getElementById(`event-${id}`).remove()
-        }
-        let error_window = document.getElementById('delete-error-message')
-        error_window.innerHTML = `Error deleting ${event_name}`
-        error_window.style.setProperty('display', info.success ? 'none' : 'block')
-    })
-}
 
-function formTable(element) {
-    $('#days li a').removeClass("active");
-    $(element).addClass("active");
-    clearTable();
-    let day = $(element).text().toLowerCase();
-    //TODO: Make request and fill table with events for the day
-    fetch(`/getSchedule?day=${day}`).then((response) => response.json()).then((info) => {
-        let body = document.querySelector('#scheduleTable > tbody')
-        if (!body) {
-            let error_window = document.getElementById('delete-error-message')
-            error_window.innerHTML = `Error deleting event: not found`
-            error_window.style.setProperty('display', 'block')
-            return
-        }
-        let rows = []
-        for (let obj of info) {
-            rows.push(`
-	<tr id="event-${obj.id}" class="event-row">
-	<td>${obj.event}</td>
-	<td>${obj.start} - ${obj.end}</td>
-	<td>${obj.location}</td>
-	<td>${obj.phone}</td>
-	<td>${obj.url ? `<a href=${obj.url}>${obj.info || obj.url}</a>` : obj.info}</td>
-	<td>
-	<a class="btn btn-info" href="/editForm?id=${obj.id}">Edit</a>
-	<input type="button" class="btn btn-danger" value="Delete" onclick="deleteEvent('${obj.id}')">
-	</td>
-	</tr>`)
-        }
-        body.innerHTML = rows.join('')
-    })
-}
+<div id="table-container" class="container mb-3">
+</div>		
+<script src="react/table.js"></script>
+<script src="react/navbar.js"></script>
 
-function clearTable() {
-    $('#scheduleTable tbody').empty();
-}
-</script>
 </body>
 </html>
